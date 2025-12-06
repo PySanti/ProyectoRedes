@@ -110,17 +110,17 @@ class App(tk.Tk):
         self.create_widgets()
 
     def create_widgets(self):
-        # --- Frame Principal de Control (Horizontal) ---
+        # Este es el frame principal
         control_frame = tk.Frame(self, bg="#dcdcdc", padx=10, pady=10)
         control_frame.pack(fill=tk.X, padx=10, pady=(10, 5))
 
-        # Sección URL
+        # Input de URL
         tk.Label(control_frame, text="URL:", bg="#dcdcdc", font=("Arial", 10, "bold")).pack(side=tk.LEFT, padx=(0, 5))
         self.url_entry = tk.Entry(control_frame, width=60, font=("Arial", 10))
         self.url_entry.pack(side=tk.LEFT, padx=5, fill=tk.X, expand=True)
         self.url_entry.insert(0, "http://ucab.edu.ve")
 
-        # Sección Método
+        # Esta es la seccion de seleccion de Método
         tk.Label(control_frame, text="Método:", bg="#dcdcdc", font=("Arial", 10, "bold")).pack(side=tk.LEFT, padx=10)
         self.method_var = tk.StringVar(value="GET")
         methods = ["GET", "HEAD"]
@@ -128,26 +128,32 @@ class App(tk.Tk):
         self.method_menu.pack(side=tk.LEFT, padx=5)
 
         # Botón Enviar
-        self.send_btn = tk.Button(control_frame, text="🚀 Enviar Solicitud", command=self.start_request, bg="#4CAF50", fg="white", font=("Arial", 10, "bold"))
+        self.send_btn = tk.Button(control_frame, 
+                                  text="Enviar Solicitud", 
+                                  command=self.start_request, # metodo que se ejecutara al presionar el boton, definido mas abajo
+                                  bg="#4CAF50", 
+                                  fg="white", 
+                                  font=("Arial", 10, "bold"))
         self.send_btn.pack(side=tk.RIGHT, padx=(15, 0))
 
-        # --- Frame de Resultados (Dividido Verticalmente) ---
+        # Este es el frame de resultados, el que esta dividido verticalmente
         results_frame = tk.Frame(self, bg="#f0f0f0")
         results_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=(5, 10))
 
-        # --- Sub-Frame Izquierdo (Cabeceras) ---
+        # El frame de las cabeceras
         left_frame = tk.Frame(results_frame)
         left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 5))
         
-        tk.Label(left_frame, text="📝 Cabeceras de Respuesta:", anchor="w", font=("Arial", 12, "bold")).pack(fill=tk.X, pady=(0, 3))
+        tk.Label(left_frame, text="Cabeceras de Respuesta:", anchor="w", font=("Arial", 12, "bold")).pack(fill=tk.X, pady=(0, 3))
         self.headers_text = scrolledtext.ScrolledText(left_frame, height=1, width=1, font=("Consolas", 9), wrap=tk.WORD, relief=tk.SUNKEN, borderwidth=2)
         self.headers_text.pack(padx=2, pady=2, fill=tk.BOTH, expand=True)
 
-        # --- Sub-Frame Derecho (Cuerpo/Contenido) ---
+
+        # El frame del body
         right_frame = tk.Frame(results_frame)
         right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=(5, 0))
         
-        tk.Label(right_frame, text="📄 Cuerpo / Contenido HTML:", anchor="w", font=("Arial", 12, "bold")).pack(fill=tk.X, pady=(0, 3))
+        tk.Label(right_frame, text="Cuerpo / Contenido HTML:", anchor="w", font=("Arial", 12, "bold")).pack(fill=tk.X, pady=(0, 3))
         self.body_text = scrolledtext.ScrolledText(right_frame, height=1, width=1, font=("Consolas", 9), wrap=tk.WORD, relief=tk.SUNKEN, borderwidth=2)
         self.body_text.pack(padx=2, pady=2, fill=tk.BOTH, expand=True)
 
@@ -168,7 +174,6 @@ class App(tk.Tk):
         thread.start()
 
     def run_request(self, url, method):
-        # Asegurarse de que el esquema exista si no se especifica
         if not url.startswith("http"):
             url = "http://" + url
             
@@ -179,8 +184,7 @@ class App(tk.Tk):
         self.body_text.delete(1.0, tk.END)
 
         if status_line == "Error":
-             # Mostrar error en ambas cajas para máxima visibilidad
-            self.headers_text.insert(tk.END, "⚠️ ERROR DE CONEXIÓN O PROTOCOLO ⚠️\n\n")
+            self.headers_text.insert(tk.END, "ERROR DE CONEXIÓN O PROTOCOLO\n\n")
             self.body_text.insert(tk.END, headers) # headers contiene el mensaje de error
         elif method == "HEAD":
             self.headers_text.insert(tk.END, status_line + "\n" + headers)
@@ -190,7 +194,7 @@ class App(tk.Tk):
             self.body_text.insert(tk.END, body)
 
         # Restaurar botón
-        self.send_btn.config(state=tk.NORMAL, text="🚀 Enviar Solicitud")
+        self.send_btn.config(state=tk.NORMAL, text="Enviar Solicitud")
 
 
 if __name__ == "__main__":
